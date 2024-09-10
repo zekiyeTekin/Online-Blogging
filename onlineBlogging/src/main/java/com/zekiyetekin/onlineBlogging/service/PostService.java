@@ -9,5 +9,13 @@ public interface PostService {
 
     ResponseEntity<List<Post>> getAllPost();
 
+    Post savePost(Post post);
+
+    ResponseEntity<Post> getPostById(Integer id);
+
+    ResponseEntity<Post> likePost(Integer id);
+
+    ResponseEntity<List<Post>> searchByName(String name);
+
 
 }
