@@ -1,11 +1,12 @@
 package com.zekiyetekin.onlineBlogging.controller;
 
+import com.zekiyetekin.onlineBlogging.common.ResponseModel;
 import com.zekiyetekin.onlineBlogging.entity.Post;
+import com.zekiyetekin.onlineBlogging.enumuration.ResponseMessageEnum;
+import com.zekiyetekin.onlineBlogging.enumuration.ResponseStatusEnum;
 import com.zekiyetekin.onlineBlogging.service.PostService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,50 +24,44 @@ public class PostController {
     }
 
     @GetMapping("/get/posts")
-    public ResponseEntity<List<Post>> getAllPost(){
+    public ResponseModel<List<Post>> getAllPost(){
         return postService.getAllPost();
     }
 
 
     @PostMapping("/create")
-    public ResponseEntity<Post> createPost(@RequestBody Post post){
-        try{
-            //System.out.println("Received Post: " + post);
-            Post createdPost = postService.savePost(post);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public ResponseModel<Post> createPost(@RequestBody Post post){
+        return postService.savePost(post);
     }
 
 
     @GetMapping("/by")
-    public ResponseEntity<Post> getPostById(@RequestParam Integer id) {
+    public ResponseModel<Post> getPostById(@RequestParam Integer id) {
 
         try {
             return postService.getPostById(id);
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return new ResponseModel<>(ResponseStatusEnum.NOT_FOUND.getCode(), ResponseStatusEnum.NOT_FOUND.getMessage(), false, ResponseMessageEnum.DATA_NOT_FOUND, null);
         }
     }
 
     @PutMapping("like/by")
-    public ResponseEntity<Post> likePost(@RequestParam Integer id){
+    public ResponseModel<Post> likePost(@RequestParam Integer id){
 
         try{
             return postService.likePost(id);
         }catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return new ResponseModel<>(ResponseStatusEnum.NOT_FOUND.getCode(), ResponseStatusEnum.NOT_FOUND.getMessage(), false, ResponseMessageEnum.DATA_NOT_FOUND, null);
         }
     }
 
     @GetMapping("/search/by")
-    public ResponseEntity<List<Post>> searchByName(@RequestParam String name){
+    public ResponseModel<List<Post>> searchByName(@RequestParam String name){
 
         try{
             return postService.searchByName(name);
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return new ResponseModel<>(ResponseStatusEnum.INTERNAL_SERVER_ERROR.getCode(), ResponseStatusEnum.INTERNAL_SERVER_ERROR.getMessage(), false, ResponseMessageEnum.DATA_NOT_FOUND, null);
         }
     }
 

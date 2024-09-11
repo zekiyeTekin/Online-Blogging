@@ -1,7 +1,10 @@
 package com.zekiyetekin.onlineBlogging.service.implementation;
 
+import com.zekiyetekin.onlineBlogging.common.ResponseModel;
 import com.zekiyetekin.onlineBlogging.entity.Comment;
 import com.zekiyetekin.onlineBlogging.entity.Post;
+import com.zekiyetekin.onlineBlogging.enumuration.ResponseMessageEnum;
+import com.zekiyetekin.onlineBlogging.enumuration.ResponseStatusEnum;
 import com.zekiyetekin.onlineBlogging.repository.CommentRepository;
 import com.zekiyetekin.onlineBlogging.repository.PostRepository;
 import com.zekiyetekin.onlineBlogging.service.CommentService;
@@ -29,7 +32,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
-    public ResponseEntity<Comment> createComment(Integer postId, Comment comment){
+    public ResponseModel<Comment> createComment(Integer postId, Comment comment){
 
         Optional<Post> optionalPost = postRepository.findById(postId);
         if(optionalPost.isPresent()){
@@ -40,24 +43,25 @@ public class CommentServiceImpl implements CommentService {
             newComment.setPostedBy(comment.getPostedBy());
             newComment.setCreatedAt(new Date());
 
-            return new ResponseEntity<>(commentRepository.save(newComment), HttpStatus.OK);
+            return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.CREATED_SUCCESSFULLY, commentRepository.save(newComment));
         }else {
             throw new EntityNotFoundException("Post not found");
         }
     }
 
 
-    public ResponseEntity<List<Comment>> getCommentByPostId(Integer postId){
+    public ResponseModel<List<Comment>> getCommentByPostId(Integer postId){
         try {
             List<Comment> commentList = commentRepository.findCommentsByPostId(postId);
             if (!commentList.isEmpty()) {
-                return new ResponseEntity<>(commentList, HttpStatus.OK);
+                return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.LISTING_SUCCESSFULLY_DONE, commentList);
             }
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+            return new ResponseModel<>(ResponseStatusEnum.NO_CONTENT.getCode(), ResponseStatusEnum.NO_CONTENT.getMessage(), true, ResponseMessageEnum.SUCCESSFULLY_DONE, new ArrayList<>());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return new ResponseModel<>(ResponseStatusEnum.INTERNAL_SERVER_ERROR.getCode(), ResponseStatusEnum.INTERNAL_SERVER_ERROR.getMessage(), false, ResponseMessageEnum.DATA_NOT_FOUND, null);
         }
     }
+
 
 
 }

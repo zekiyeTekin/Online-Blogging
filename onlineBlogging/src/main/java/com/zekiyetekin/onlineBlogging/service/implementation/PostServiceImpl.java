@@ -1,6 +1,9 @@
 package com.zekiyetekin.onlineBlogging.service.implementation;
 
+import com.zekiyetekin.onlineBlogging.common.ResponseModel;
 import com.zekiyetekin.onlineBlogging.entity.Post;
+import com.zekiyetekin.onlineBlogging.enumuration.ResponseMessageEnum;
+import com.zekiyetekin.onlineBlogging.enumuration.ResponseStatusEnum;
 import com.zekiyetekin.onlineBlogging.repository.PostRepository;
 import com.zekiyetekin.onlineBlogging.service.PostService;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,58 +28,64 @@ public class PostServiceImpl implements PostService {
     }
 
 
-    public ResponseEntity<List<Post>> getAllPost() {
+    public ResponseModel<List<Post>> getAllPost() {
         try {
             List<Post> postList = postRepository.findAll();
             if (!postList.isEmpty()) {
-                return new ResponseEntity<>(postList, HttpStatus.OK);
+                return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.LISTING_SUCCESSFULLY_DONE, postList);
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return new ResponseModel<>(ResponseStatusEnum.INTERNAL_SERVER_ERROR.getCode(), ResponseStatusEnum.INTERNAL_SERVER_ERROR.getMessage(), false, ResponseMessageEnum.DATA_NOT_FOUND, null);
         }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NO_CONTENT);
+        return new ResponseModel<>(ResponseStatusEnum.NO_CONTENT.getCode(), ResponseStatusEnum.NO_CONTENT.getMessage(), true, ResponseMessageEnum.DATA_NOT_FOUND, new ArrayList<>());
     }
 
 
-    public Post savePost(Post post) {
-        post.setLikeCount(0);
-        post.setViewCount(0);
-        post.setDate(new Date());
+    public ResponseModel<Post> savePost(Post post) {
+        try{
+            post.setLikeCount(0);
+            post.setViewCount(0);
+            post.setDate(new Date());
 
-        return postRepository.save(post);
+            return new ResponseModel<>(ResponseStatusEnum.CREATED.getCode(), ResponseStatusEnum.CREATED.getMessage(), true, ResponseMessageEnum.CREATED_SUCCESSFULLY, postRepository.save(post));
+        }catch (Exception e){
+            return new ResponseModel<>(ResponseStatusEnum.INTERNAL_SERVER_ERROR.getCode(), ResponseStatusEnum.INTERNAL_SERVER_ERROR.getMessage(), false, ResponseMessageEnum.DATA_NOT_FOUND, null);
+        }
     }
 
 
-    public ResponseEntity<Post> getPostById(Integer id) {
+
+
+    public ResponseModel<Post> getPostById(Integer id) {
 
         Optional<Post> optionalPost = postRepository.findById(id);
 
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
             post.setViewCount(post.getViewCount() + 1);
-            return new ResponseEntity<>(postRepository.save(post), HttpStatus.OK);
+            return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.LISTING_SUCCESSFULLY_DONE, postRepository.save(post));
         } else {
             throw new EntityNotFoundException("Post not found");
         }
     }
 
 
-    public ResponseEntity<Post> likePost(Integer id) {
+    public ResponseModel<Post> likePost(Integer id) {
 
         Optional<Post> optionalPost = postRepository.findById(id);
 
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
             post.setLikeCount(post.getLikeCount() + 1);
-            return new ResponseEntity<>(postRepository.save(post), HttpStatus.OK);
+            return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.SUCCESSFULLY_DONE, postRepository.save(post));
         } else {
             throw new EntityNotFoundException("Post not found with id" + id);
         }
     }
 
 
-    public ResponseEntity<List<Post>> searchByName(String name) {
-        return new ResponseEntity<>(postRepository.findAllByNameContaining(name), HttpStatus.OK);
+    public ResponseModel<List<Post>> searchByName(String name) {
+        return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.SEARCHED_SUCCESSFULLY, postRepository.findAllByNameContaining(name));
     }
 
 }
