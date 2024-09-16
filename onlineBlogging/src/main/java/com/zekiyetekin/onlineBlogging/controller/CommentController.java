@@ -25,7 +25,6 @@ public class CommentController {
     }
 
 
-
     @PostMapping("/create")
     public ResponseModel<Comment> createComment(@RequestParam Integer postId, @RequestBody Comment comment){
 
