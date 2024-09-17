@@ -79,7 +79,7 @@ public class SecurityConfig {
         final CorsConfiguration corsConfiguration = new CorsConfiguration();
 
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOrigins(Collections.singletonList("http://127.0.0.1:5501/"));
+        corsConfiguration.setAllowedOrigins(Collections.singletonList("http://127.0.0.1:5500/"));
         corsConfiguration.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.ORIGIN,
                 HttpHeaders.CONTENT_TYPE,

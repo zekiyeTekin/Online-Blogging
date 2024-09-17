@@ -2,6 +2,7 @@ package com.zekiyetekin.onlineBlogging.service.implementation;
 
 import com.zekiyetekin.onlineBlogging.entity.AuthenticationResponse;
 import com.zekiyetekin.onlineBlogging.entity.User;
+import com.zekiyetekin.onlineBlogging.enumuration.RoleEnum;
 import com.zekiyetekin.onlineBlogging.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +30,7 @@ public class AuthenticationService {
         user.setName(request.getName());
         user.setMail(request.getMail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(request.getRole());
+        user.setRole(RoleEnum.USER);
 
         user = userRepository.save(user);
         String token = jwtService.generateToken(user);
