@@ -51,7 +51,10 @@ public class SecurityConfig {
                                 .requestMatchers("/post/search/by").hasAnyAuthority(RoleEnum.USER.name())
                                 .requestMatchers("/post/like/by").hasAnyAuthority(RoleEnum.USER.name())
                                 .requestMatchers("/post/by").permitAll()
+                                .requestMatchers("/upload/**").permitAll()
                                 .requestMatchers("/post/get/posts").permitAll()
+                                .requestMatchers("/uploads/**").permitAll()
+                                .requestMatchers("/files/**").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
@@ -79,7 +82,7 @@ public class SecurityConfig {
         final CorsConfiguration corsConfiguration = new CorsConfiguration();
 
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOrigins(Collections.singletonList("http://127.0.0.1:5500/"));
+        corsConfiguration.setAllowedOrigins(Collections.singletonList("http://127.0.0.1:5501/"));
         corsConfiguration.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.ORIGIN,
                 HttpHeaders.CONTENT_TYPE,

@@ -2,7 +2,6 @@ package com.zekiyetekin.onlineBlogging.service;
 
 import com.zekiyetekin.onlineBlogging.common.ResponseModel;
 import com.zekiyetekin.onlineBlogging.entity.Comment;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 

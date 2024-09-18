@@ -1,6 +1,7 @@
 package com.zekiyetekin.onlineBlogging.service.implementation;
 
 import com.zekiyetekin.onlineBlogging.common.ResponseModel;
+import com.zekiyetekin.onlineBlogging.controller.FileUploadController;
 import com.zekiyetekin.onlineBlogging.entity.Post;
 import com.zekiyetekin.onlineBlogging.enumuration.ResponseMessageEnum;
 import com.zekiyetekin.onlineBlogging.enumuration.ResponseStatusEnum;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -87,5 +89,7 @@ public class PostServiceImpl implements PostService {
     public ResponseModel<List<Post>> searchByName(String name) {
         return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.SEARCHED_SUCCESSFULLY, postRepository.findAllByNameContaining(name));
     }
+
+
 
 }
