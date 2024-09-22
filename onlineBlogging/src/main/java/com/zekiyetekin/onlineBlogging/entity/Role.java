@@ -15,9 +15,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Role {
 
-    @jakarta.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Integer Id;
+    private Integer id;
 
 
     @Enumerated(EnumType.STRING)

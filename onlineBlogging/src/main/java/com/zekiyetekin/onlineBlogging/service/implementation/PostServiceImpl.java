@@ -1,7 +1,6 @@
 package com.zekiyetekin.onlineBlogging.service.implementation;
 
 import com.zekiyetekin.onlineBlogging.common.ResponseModel;
-import com.zekiyetekin.onlineBlogging.controller.FileUploadController;
 import com.zekiyetekin.onlineBlogging.entity.Post;
 import com.zekiyetekin.onlineBlogging.enumuration.ResponseMessageEnum;
 import com.zekiyetekin.onlineBlogging.enumuration.ResponseStatusEnum;
@@ -9,10 +8,7 @@ import com.zekiyetekin.onlineBlogging.repository.PostRepository;
 import com.zekiyetekin.onlineBlogging.service.PostService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Date;
