@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class PostDto {
+    private Integer id;
     private String name;
     private String content;
     private String postedBy;

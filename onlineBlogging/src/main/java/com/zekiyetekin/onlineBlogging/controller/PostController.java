@@ -1,6 +1,7 @@
 package com.zekiyetekin.onlineBlogging.controller;
 
 import com.zekiyetekin.onlineBlogging.common.ResponseModel;
+import com.zekiyetekin.onlineBlogging.dto.PostDto;
 import com.zekiyetekin.onlineBlogging.entity.Post;
 import com.zekiyetekin.onlineBlogging.enumuration.ResponseMessageEnum;
 import com.zekiyetekin.onlineBlogging.enumuration.ResponseStatusEnum;
@@ -25,7 +26,7 @@ public class PostController {
     }
 
     @GetMapping("/get/posts")
-    public ResponseModel<List<Post>> getAllPost(){
+    public ResponseModel<List<PostDto>> getAllPost(){
         return postService.getAllPost();
     }
 

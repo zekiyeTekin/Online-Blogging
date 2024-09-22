@@ -12,6 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserDto {
 
+    private Integer id;
+
     private String name;
 
     private String mail;
@@ -22,6 +24,7 @@ public class UserDto {
 
 
     public UserDto(Builder builder){
+        this.id = builder.id;
         this.name = builder.name;
         this.mail = builder.mail;
         this.password = builder.password;
@@ -29,18 +32,25 @@ public class UserDto {
     }
 
     public static class Builder{
+        private Integer id;
         private String name;
         private String mail;
         private String password;
         private RoleEnum role;
 
-        public Builder() {}
+        public Builder(){ }
 
-        public Builder(String name, String mail, String password, RoleEnum role ){
+        public Builder(Integer id, String name, String mail, String password, RoleEnum role ){
+            this.id = id;
             this.name = name;
             this.mail = mail;
             this.password = password;
             this.role = role;
+        }
+
+        public Builder id(Integer id){
+            this.id = id;
+            return this;
         }
 
         public Builder name(String name){

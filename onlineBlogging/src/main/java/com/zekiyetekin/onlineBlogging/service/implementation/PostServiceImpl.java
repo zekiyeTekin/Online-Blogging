@@ -1,9 +1,11 @@
 package com.zekiyetekin.onlineBlogging.service.implementation;
 
 import com.zekiyetekin.onlineBlogging.common.ResponseModel;
+import com.zekiyetekin.onlineBlogging.dto.PostDto;
 import com.zekiyetekin.onlineBlogging.entity.Post;
 import com.zekiyetekin.onlineBlogging.enumuration.ResponseMessageEnum;
 import com.zekiyetekin.onlineBlogging.enumuration.ResponseStatusEnum;
+import com.zekiyetekin.onlineBlogging.mapper.PostMapper;
 import com.zekiyetekin.onlineBlogging.repository.PostRepository;
 import com.zekiyetekin.onlineBlogging.service.PostService;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,18 +21,20 @@ import java.util.Optional;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
+    private final PostMapper postMapper;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository) {
+    public PostServiceImpl(PostRepository postRepository, PostMapper postMapper) {
         this.postRepository = postRepository;
+        this.postMapper = postMapper;
     }
 
 
-    public ResponseModel<List<Post>> getAllPost() {
+    public ResponseModel<List<PostDto>> getAllPost() {
         try {
             List<Post> postList = postRepository.findAll();
             if (!postList.isEmpty()) {
-                return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.LISTING_SUCCESSFULLY_DONE, postList);
+                return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.LISTING_SUCCESSFULLY_DONE, postMapper.convertList(postList));
             }
         } catch (Exception e) {
             return new ResponseModel<>(ResponseStatusEnum.INTERNAL_SERVER_ERROR.getCode(), ResponseStatusEnum.INTERNAL_SERVER_ERROR.getMessage(), false, ResponseMessageEnum.DATA_NOT_FOUND, null);
