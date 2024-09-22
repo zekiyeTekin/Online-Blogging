@@ -43,13 +43,13 @@ public class PostServiceImpl implements PostService {
     }
 
 
-    public ResponseModel<Post> savePost(Post post) {
+    public ResponseModel<PostDto> savePost(Post post) {
         try{
             post.setLikeCount(0);
             post.setViewCount(0);
             post.setDate(new Date());
 
-            return new ResponseModel<>(ResponseStatusEnum.CREATED.getCode(), ResponseStatusEnum.CREATED.getMessage(), true, ResponseMessageEnum.CREATED_SUCCESSFULLY, postRepository.save(post));
+            return new ResponseModel<>(ResponseStatusEnum.CREATED.getCode(), ResponseStatusEnum.CREATED.getMessage(), true, ResponseMessageEnum.CREATED_SUCCESSFULLY, postMapper.toDto(postRepository.save(post)));
         }catch (Exception e){
             return new ResponseModel<>(ResponseStatusEnum.INTERNAL_SERVER_ERROR.getCode(), ResponseStatusEnum.INTERNAL_SERVER_ERROR.getMessage(), false, ResponseMessageEnum.DATA_NOT_FOUND, null);
         }
@@ -57,37 +57,36 @@ public class PostServiceImpl implements PostService {
 
 
 
-
-    public ResponseModel<Post> getPostById(Integer id) {
+    public ResponseModel<PostDto> getPostById(Integer id) {
 
         Optional<Post> optionalPost = postRepository.findById(id);
 
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
             post.setViewCount(post.getViewCount() + 1);
-            return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.LISTING_SUCCESSFULLY_DONE, postRepository.save(post));
+            return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.LISTING_SUCCESSFULLY_DONE, postMapper.toDto(postRepository.save(post)));
         } else {
             throw new EntityNotFoundException("Post not found");
         }
     }
 
 
-    public ResponseModel<Post> likePost(Integer id) {
+    public ResponseModel<PostDto> likePost(Integer id) {
 
         Optional<Post> optionalPost = postRepository.findById(id);
 
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
             post.setLikeCount(post.getLikeCount() + 1);
-            return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.SUCCESSFULLY_DONE, postRepository.save(post));
+            return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.SUCCESSFULLY_DONE, postMapper.toDto(postRepository.save(post)));
         } else {
             throw new EntityNotFoundException("Post not found with id" + id);
         }
     }
 
 
-    public ResponseModel<List<Post>> searchByName(String name) {
-        return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.SEARCHED_SUCCESSFULLY, postRepository.findAllByNameContaining(name));
+    public ResponseModel<List<PostDto>> searchByName(String name) {
+        return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.SEARCHED_SUCCESSFULLY, postMapper.convertList(postRepository.findAllByNameContaining(name)));
     }
 
 

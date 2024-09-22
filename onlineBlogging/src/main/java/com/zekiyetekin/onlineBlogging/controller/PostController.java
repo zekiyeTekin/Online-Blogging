@@ -32,13 +32,12 @@ public class PostController {
 
 
     @PostMapping("/create")
-    public ResponseModel<Post> createPost(@RequestBody Post post){
+    public ResponseModel<PostDto> createPost(@RequestBody Post post){
         return postService.savePost(post);
     }
 
-
     @GetMapping("/by")
-    public ResponseModel<Post> getPostById(@RequestParam Integer id) {
+    public ResponseModel<PostDto> getPostById(@RequestParam Integer id) {
 
         try {
             return postService.getPostById(id);
@@ -48,7 +47,7 @@ public class PostController {
     }
 
     @PutMapping("like/by")
-    public ResponseModel<Post> likePost(@RequestParam Integer id){
+    public ResponseModel<PostDto> likePost(@RequestParam Integer id){
 
         try{
             return postService.likePost(id);
@@ -58,7 +57,7 @@ public class PostController {
     }
 
     @GetMapping("/search/by")
-    public ResponseModel<List<Post>> searchByName(@RequestParam String name){
+    public ResponseModel<List<PostDto>> searchByName(@RequestParam String name){
 
         try{
             return postService.searchByName(name);

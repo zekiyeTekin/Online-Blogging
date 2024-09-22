@@ -10,13 +10,13 @@ public interface PostService {
 
     ResponseModel<List<PostDto>> getAllPost();
 
-    ResponseModel<Post> savePost(Post post);
+    ResponseModel<PostDto> savePost(Post post);
 
-    ResponseModel<Post> getPostById(Integer id);
+    ResponseModel<PostDto> getPostById(Integer id);
 
-    ResponseModel<Post> likePost(Integer id);
+    ResponseModel<PostDto> likePost(Integer id);
 
-    ResponseModel<List<Post>> searchByName(String name);
+    ResponseModel<List<PostDto>> searchByName(String name);
 
 
 
