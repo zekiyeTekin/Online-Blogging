@@ -2,6 +2,7 @@ package com.zekiyetekin.onlineBlogging.controller;
 
 
 import com.zekiyetekin.onlineBlogging.common.ResponseModel;
+import com.zekiyetekin.onlineBlogging.dto.CommentDto;
 import com.zekiyetekin.onlineBlogging.entity.Comment;
 import com.zekiyetekin.onlineBlogging.enumuration.ResponseMessageEnum;
 import com.zekiyetekin.onlineBlogging.enumuration.ResponseStatusEnum;
@@ -25,10 +26,10 @@ public class CommentController {
 
 
     @PostMapping("/create")
-    public ResponseModel<Comment> createComment(@RequestParam Integer postId, @RequestBody Comment comment){
+    public ResponseModel<CommentDto> createComment(@RequestParam Integer postId, @RequestBody CommentDto commentDto){
 
         try{
-            return commentService.createComment(postId,comment);
+            return commentService.createComment(postId,commentDto);
         }catch(Exception e){
             return new ResponseModel<>(ResponseStatusEnum.NOT_ACCEPTABLE.getCode(), ResponseStatusEnum.NOT_ACCEPTABLE.getMessage(), false, ResponseMessageEnum.NOT_ACCEPTABLE, null);
         }
@@ -36,7 +37,7 @@ public class CommentController {
 
 
     @GetMapping("/by")
-    public ResponseModel<List<Comment>> getCommentByPostId(@RequestParam Integer postId){
+    public ResponseModel<List<CommentDto>> getCommentByPostId(@RequestParam Integer postId){
         try{
             return commentService.getCommentByPostId(postId);
 
