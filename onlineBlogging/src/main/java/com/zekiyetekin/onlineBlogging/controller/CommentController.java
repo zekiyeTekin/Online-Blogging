@@ -3,7 +3,6 @@ package com.zekiyetekin.onlineBlogging.controller;
 
 import com.zekiyetekin.onlineBlogging.common.ResponseModel;
 import com.zekiyetekin.onlineBlogging.dto.CommentDto;
-import com.zekiyetekin.onlineBlogging.entity.Comment;
 import com.zekiyetekin.onlineBlogging.enumuration.ResponseMessageEnum;
 import com.zekiyetekin.onlineBlogging.enumuration.ResponseStatusEnum;
 import com.zekiyetekin.onlineBlogging.service.CommentService;

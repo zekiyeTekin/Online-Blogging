@@ -18,7 +18,6 @@ import java.nio.file.Paths;
 @CrossOrigin(origins = "*", maxAge=3600)
 public class FileUploadController {
 
-    // Görsellerin saklanacağı dizin
     private static final String FILE_DIR = "uploads/";
 
     @GetMapping("/images/{filename}")
@@ -45,10 +44,8 @@ public class FileUploadController {
         String fileName = file.getOriginalFilename();
         Path filePath = Paths.get(FILE_DIR).resolve(fileName);
 
-        // Klasörün mevcut olduğundan emin olun
         Files.createDirectories(filePath.getParent());
 
-        // Dosyayı yazma
         Files.write(filePath, file.getBytes());
         return fileName;
     }
