@@ -13,6 +13,7 @@ public enum ResponseStatusEnum {
     BAD_REQUEST(400, "Bad Request"),
     UNAUTHORIZED(401, "Unauthorized"),
     FORBIDDEN(403, "Forbidden"),
+    CONFLICT(409,"Conflict"),
 
     NOT_FOUND(404, "Not Found"),
     NOT_ACCEPTABLE(406, "Not Acceptable"),

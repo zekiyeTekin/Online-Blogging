@@ -53,6 +53,7 @@ public class SecurityConfig {
                                 .requestMatchers("/post/by").hasAnyAuthority(RoleEnum.USER.name())
                                 .requestMatchers("/user/**").hasAnyAuthority(RoleEnum.USER.name())
                                 .requestMatchers("/upload/**").permitAll()
+                                .requestMatchers("/like/**").permitAll()
                                 .requestMatchers("/post/get/posts").hasAnyAuthority(RoleEnum.USER.name())
                                 .requestMatchers("/uploads/**").permitAll()
                                 .requestMatchers("/files/**").permitAll()

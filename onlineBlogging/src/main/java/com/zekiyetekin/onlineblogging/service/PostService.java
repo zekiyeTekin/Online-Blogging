@@ -14,7 +14,7 @@ public interface PostService {
 
     ResponseModel<PostDto> getPostById(Integer id);
 
-    ResponseModel<PostDto> likePost(Integer id);
+    //ResponseModel<PostDto> likePost(Integer id);
 
     ResponseModel<List<PostDto>> searchByName(String name);
 

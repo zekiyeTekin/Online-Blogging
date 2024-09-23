@@ -70,7 +70,7 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-
+    /*
     public ResponseModel<PostDto> likePost(Integer id) {
 
         Optional<Post> optionalPost = postRepository.findById(id);
@@ -82,7 +82,7 @@ public class PostServiceImpl implements PostService {
         } else {
             throw new EntityNotFoundException("Post not found with id" + id);
         }
-    }
+    }*/
 
 
     public ResponseModel<List<PostDto>> searchByName(String name) {

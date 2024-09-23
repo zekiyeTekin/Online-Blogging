@@ -46,6 +46,7 @@ public class PostController {
         }
     }
 
+    /*
     @PutMapping("like/by")
     public ResponseModel<PostDto> likePost(@RequestParam Integer id){
 
@@ -54,7 +55,7 @@ public class PostController {
         }catch (EntityNotFoundException e) {
             return new ResponseModel<>(ResponseStatusEnum.NOT_FOUND.getCode(), ResponseStatusEnum.NOT_FOUND.getMessage(), false, ResponseMessageEnum.DATA_NOT_FOUND, null);
         }
-    }
+    }*/
 
     @GetMapping("/search/by")
     public ResponseModel<List<PostDto>> searchByName(@RequestParam String name){
