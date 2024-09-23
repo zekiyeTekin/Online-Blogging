@@ -30,11 +30,8 @@ public class LikeServiceImpl implements LikeService {
 
     public ResponseModel<Like> likesPost(Integer userId, Integer postId){
 
-
         Post post = postRepository.findById(postId).orElseThrow(()-> new RuntimeException("Post not found" ));
-
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-
         Optional<Like> optionalLike = likeRepository.findLikeByUserAndPost(user,post);
 
         if(optionalLike.isEmpty()){
@@ -47,6 +44,27 @@ public class LikeServiceImpl implements LikeService {
             post.setLikeCount(post.getLikeCount() + 1);
             postRepository.save(post);
             return new ResponseModel<>(ResponseStatusEnum.CREATED.getCode(), ResponseStatusEnum.CREATED.getMessage(), true, ResponseMessageEnum.LIKED_SUCCESSFULLY, newLike);
+        }
+        return new ResponseModel<>(ResponseStatusEnum.CONFLICT.getCode(), ResponseStatusEnum.CONFLICT.getMessage(), false,ResponseMessageEnum.ALREADY_LIKED, null);
+    }
+
+
+    public ResponseModel<Like> dislikePost(Integer userId, Integer postId){
+
+        Post post = postRepository.findById(postId).orElseThrow(()-> new RuntimeException("Post not found" ));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        Optional<Like> optionalLike = likeRepository.findLikeByUserAndPost(user,post);
+
+        if(optionalLike.isPresent()){
+           Like likedPost = optionalLike.get();
+
+            likedPost.setPost(post);
+            likedPost.setUser(user);
+            likeRepository.save(likedPost);
+
+            post.setLikeCount(post.getLikeCount() - 1);
+            postRepository.save(post);
+            return new ResponseModel<>(ResponseStatusEnum.CREATED.getCode(), ResponseStatusEnum.CREATED.getMessage(), true, ResponseMessageEnum.DISLIKED_SUCCESSFULLY, likedPost);
         }
         return new ResponseModel<>(ResponseStatusEnum.CONFLICT.getCode(), ResponseStatusEnum.CONFLICT.getMessage(), false,ResponseMessageEnum.ALREADY_LIKED, null);
     }

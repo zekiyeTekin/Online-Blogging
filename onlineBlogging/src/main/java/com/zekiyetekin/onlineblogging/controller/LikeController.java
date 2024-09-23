@@ -31,7 +31,15 @@ public class LikeController {
         } catch (EntityNotFoundException e) {
             return new ResponseModel<>(ResponseStatusEnum.NOT_FOUND.getCode(), ResponseStatusEnum.NOT_FOUND.getMessage(), false, ResponseMessageEnum.DATA_NOT_FOUND, null);
         }
+    }
 
+    @PostMapping("/dislike")
+    public ResponseModel<Like> dislikePost(@RequestParam Integer userId, @RequestParam Integer postId){
+        try {
+            return likeService.dislikePost(userId,postId);
+        } catch (EntityNotFoundException e) {
+            return new ResponseModel<>(ResponseStatusEnum.NOT_FOUND.getCode(), ResponseStatusEnum.NOT_FOUND.getMessage(), false, ResponseMessageEnum.DATA_NOT_FOUND, null);
+        }
     }
 
 
