@@ -10,6 +10,7 @@ import com.zekiyetekin.onlineblogging.repository.LikeRepository;
 import com.zekiyetekin.onlineblogging.repository.PostRepository;
 import com.zekiyetekin.onlineblogging.repository.UserRepository;
 import com.zekiyetekin.onlineblogging.service.LikeService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -29,8 +30,10 @@ public class LikeServiceImpl implements LikeService {
 
     public ResponseModel<Like> likesPost(Integer userId, Integer postId){
 
+
+        Post post = postRepository.findById(postId).orElseThrow(()-> new RuntimeException("Post not found" ));
+
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        Post post = postRepository.findById(postId).orElseThrow(()-> new RuntimeException("Post not found"));
 
         Optional<Like> optionalLike = likeRepository.findLikeByUserAndPost(user,post);
 
