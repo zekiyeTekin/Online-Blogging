@@ -1,7 +1,7 @@
 package com.zekiyetekin.onlineblogging.controller;
 
 import com.zekiyetekin.onlineblogging.common.ResponseModel;
-import com.zekiyetekin.onlineblogging.entity.Like;
+import com.zekiyetekin.onlineblogging.dto.LikeDto;
 import com.zekiyetekin.onlineblogging.enumuration.ResponseMessageEnum;
 import com.zekiyetekin.onlineblogging.enumuration.ResponseStatusEnum;
 import com.zekiyetekin.onlineblogging.service.LikeService;
@@ -22,7 +22,7 @@ public class LikeController {
 
 
     @PostMapping("/by")
-    public ResponseModel<Like> likePost(@RequestParam Integer userId, @RequestParam Integer postId){
+    public ResponseModel<LikeDto> likePost(@RequestParam Integer userId, @RequestParam Integer postId){
 
         try {
             return likeService.likesPost(userId,postId);
