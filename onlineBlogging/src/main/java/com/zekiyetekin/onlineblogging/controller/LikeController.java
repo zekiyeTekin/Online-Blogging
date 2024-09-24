@@ -7,8 +7,6 @@ import com.zekiyetekin.onlineblogging.enumuration.ResponseStatusEnum;
 import com.zekiyetekin.onlineblogging.service.LikeService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,15 +26,6 @@ public class LikeController {
 
         try {
             return likeService.likesPost(userId,postId);
-        } catch (EntityNotFoundException e) {
-            return new ResponseModel<>(ResponseStatusEnum.NOT_FOUND.getCode(), ResponseStatusEnum.NOT_FOUND.getMessage(), false, ResponseMessageEnum.DATA_NOT_FOUND, null);
-        }
-    }
-
-    @PostMapping("/dislike")
-    public ResponseModel<Like> dislikePost(@RequestParam Integer userId, @RequestParam Integer postId){
-        try {
-            return likeService.dislikePost(userId,postId);
         } catch (EntityNotFoundException e) {
             return new ResponseModel<>(ResponseStatusEnum.NOT_FOUND.getCode(), ResponseStatusEnum.NOT_FOUND.getMessage(), false, ResponseMessageEnum.DATA_NOT_FOUND, null);
         }

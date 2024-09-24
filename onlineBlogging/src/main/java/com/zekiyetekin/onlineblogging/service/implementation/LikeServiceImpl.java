@@ -10,7 +10,6 @@ import com.zekiyetekin.onlineblogging.repository.LikeRepository;
 import com.zekiyetekin.onlineblogging.repository.PostRepository;
 import com.zekiyetekin.onlineblogging.repository.UserRepository;
 import com.zekiyetekin.onlineblogging.service.LikeService;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -34,40 +33,34 @@ public class LikeServiceImpl implements LikeService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         Optional<Like> optionalLike = likeRepository.findLikeByUserAndPost(user,post);
 
-        if(optionalLike.isEmpty()){
+        if (optionalLike.isEmpty()) {
+            // Kullanıcı gönderiyi beğenmiyor, beğenme işlemi yap
             Like newLike = new Like();
-
             newLike.setPost(post);
             newLike.setUser(user);
             likeRepository.save(newLike);
 
+            // Gönderinin beğeni sayısını artır
             post.setLikeCount(post.getLikeCount() + 1);
             postRepository.save(post);
-            return new ResponseModel<>(ResponseStatusEnum.CREATED.getCode(), ResponseStatusEnum.CREATED.getMessage(), true, ResponseMessageEnum.LIKED_SUCCESSFULLY, newLike);
-        }
-        return new ResponseModel<>(ResponseStatusEnum.CONFLICT.getCode(), ResponseStatusEnum.CONFLICT.getMessage(), false,ResponseMessageEnum.ALREADY_LIKED, null);
-    }
 
+            return new ResponseModel<>(ResponseStatusEnum.CREATED.getCode(),
+                    ResponseStatusEnum.CREATED.getMessage(),
+                    true,
+                    ResponseMessageEnum.LIKED_SUCCESSFULLY,
+                    newLike);
+        } else {
 
-    public ResponseModel<Like> dislikePost(Integer userId, Integer postId){
-
-        Post post = postRepository.findById(postId).orElseThrow(()-> new RuntimeException("Post not found" ));
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        Optional<Like> optionalLike = likeRepository.findLikeByUserAndPost(user,post);
-
-        if(optionalLike.isPresent()){
-           Like likedPost = optionalLike.get();
-
-            likedPost.setPost(post);
-            likedPost.setUser(user);
-            likeRepository.save(likedPost);
+            likeRepository.delete(optionalLike.get());
 
             post.setLikeCount(post.getLikeCount() - 1);
             postRepository.save(post);
-            return new ResponseModel<>(ResponseStatusEnum.CREATED.getCode(), ResponseStatusEnum.CREATED.getMessage(), true, ResponseMessageEnum.DISLIKED_SUCCESSFULLY, likedPost);
+            return new ResponseModel<>(ResponseStatusEnum.CREATED.getCode(), ResponseStatusEnum.CREATED.getMessage(), true, ResponseMessageEnum.DISLIKED_SUCCESSFULLY, optionalLike.get());
         }
-        return new ResponseModel<>(ResponseStatusEnum.CONFLICT.getCode(), ResponseStatusEnum.CONFLICT.getMessage(), false,ResponseMessageEnum.ALREADY_LIKED, null);
     }
+
+
+
 
 
 }
