@@ -34,13 +34,12 @@ public class LikeServiceImpl implements LikeService {
         Optional<Like> optionalLike = likeRepository.findLikeByUserAndPost(user,post);
 
         if (optionalLike.isEmpty()) {
-            // Kullanıcı gönderiyi beğenmiyor, beğenme işlemi yap
+
             Like newLike = new Like();
             newLike.setPost(post);
             newLike.setUser(user);
             likeRepository.save(newLike);
 
-            // Gönderinin beğeni sayısını artır
             post.setLikeCount(post.getLikeCount() + 1);
             postRepository.save(post);
 
