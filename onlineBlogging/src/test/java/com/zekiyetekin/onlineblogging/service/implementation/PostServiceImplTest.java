@@ -13,11 +13,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+
 
 class PostServiceImplTest {
 
@@ -36,7 +38,7 @@ class PostServiceImplTest {
     }
 
     @Test
-    void testSavePost() {
+    void testSavePost_Success() {
 
         // Arrange:
         Post post = new Post();
@@ -60,7 +62,25 @@ class PostServiceImplTest {
 
         verify(postRepository, times(1)).save(post);
         verify(postMapper, times(1)).toDto(post);
+    }
 
+    @Test
+    void testSavePost_Exception(){
+        // Arrange:
+        Post post = new Post();
+        when(postRepository.save(any(Post.class))).thenThrow(new RuntimeException("Database error"));
+
+        //Act:
+        ResponseModel<PostDto> response = postService.savePost(post);
+
+        //Assert:
+        assertEquals(ResponseStatusEnum.INTERNAL_SERVER_ERROR.getCode(), response.getCode());
+        assertEquals(ResponseMessageEnum.DATA_NOT_FOUND, response.getMessage());
+        assertFalse(response.getSuccess());
+        assertNull(response.getData());
+
+        verify(postRepository, times(1)).save(post);
+        verify(postMapper, times(0)).toDto(any(Post.class));
 
     }
 }
