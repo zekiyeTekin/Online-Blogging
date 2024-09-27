@@ -72,7 +72,15 @@ public class PostServiceImpl implements PostService {
 
 
     public ResponseModel<List<PostDto>> searchByName(String name) {
-        return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.SEARCHED_SUCCESSFULLY, postMapper.convertList(postRepository.findAllByNameContaining(name)));
+        try{
+            List<Post> searchedPost = postRepository.findAllByNameContaining(name);
+            if (!searchedPost.isEmpty()) {
+                return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.SEARCHED_SUCCESSFULLY, postMapper.convertList(searchedPost));
+            }
+            return new ResponseModel<>(ResponseStatusEnum.NO_CONTENT.getCode(), ResponseStatusEnum.NO_CONTENT.getMessage(), true, ResponseMessageEnum.DATA_NOT_FOUND, new ArrayList<>());
+        }catch (Exception e){
+            return new ResponseModel<>(ResponseStatusEnum.INTERNAL_SERVER_ERROR.getCode(), ResponseStatusEnum.INTERNAL_SERVER_ERROR.getMessage(), false, ResponseMessageEnum.DATA_NOT_FOUND, new ArrayList<>());
+        }
     }
 
 

@@ -7,6 +7,7 @@ import com.zekiyetekin.onlineblogging.enumuration.ResponseMessageEnum;
 import com.zekiyetekin.onlineblogging.enumuration.ResponseStatusEnum;
 import com.zekiyetekin.onlineblogging.mapper.PostMapper;
 import com.zekiyetekin.onlineblogging.repository.PostRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -14,9 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -119,4 +118,114 @@ class PostServiceImplTest {
         assertFalse(response.getSuccess());
         assertNull(response.getData());
     }
+
+    @Test
+    void testGetPostById_Success(){
+        // Arrange:
+        Post post = new Post();
+        post.setId(1);
+        post.setLikeCount(10);
+        post.setViewCount(5);
+
+        PostDto postDto = new PostDto();
+        postDto.setId(1);
+        postDto.setLikeCount(10);
+        postDto.setViewCount(6);
+
+        when(postRepository.findById(1)).thenReturn(Optional.of(post));
+        when(postRepository.save(post)).thenReturn(post);
+        when(postMapper.toDto(post)).thenReturn(postDto);
+
+        // Act:
+        ResponseModel<PostDto> response = postService.getPostById(1);
+
+        // Assert:
+        assertEquals(ResponseStatusEnum.OK.getCode(), response.getCode());
+        assertEquals(ResponseMessageEnum.LISTING_SUCCESSFULLY_DONE, response.getMessage());
+        assertTrue(response.getSuccess());
+        assertEquals(postDto, response.getData());
+
+        assertEquals(6, post.getViewCount());
+    }
+
+    @Test
+    void testGetPostById_Exception(){
+        // Arrange:
+        when(postRepository.findById(1)).thenReturn(Optional.empty());
+
+        // Act:
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
+            postService.getPostById(1);
+        });
+
+        // Assert:
+        assertEquals("Post not found", exception.getMessage());
+    }
+
+    @Test
+    void testSearchByName_Success(){
+        // Arrange
+        String searchName = "Test post";
+
+        List<Post> postList = new ArrayList<>();
+
+        Post post1 = new Post();
+        post1.setId(1);
+        post1.setName("Test post 1");
+        postList.add(post1);
+
+        Post post2 = new Post();
+        post2.setId(2);
+        post2.setName("Test post 2");
+        postList.add(post2);
+
+        List<PostDto> postDtoList = new ArrayList<>();
+
+        PostDto postDto1 = new PostDto();
+        postDto1.setId(1);
+        postDto1.setName("Test post 1");
+        postDtoList.add(postDto1);
+
+        PostDto postDto2 = new PostDto();
+        postDto2.setId(2);
+        postDto2.setName("Test post 2");
+        postDtoList.add(postDto2);
+
+        when(postRepository.findAllByNameContaining(searchName)).thenReturn(postList);
+        when(postMapper.convertList(postList)).thenReturn(postDtoList);
+
+        // Act:
+        ResponseModel<List<PostDto>> response = postService.searchByName(searchName);
+
+        // Assert
+        assertEquals(ResponseStatusEnum.OK.getCode(), response.getCode());
+        assertTrue(response.getSuccess());
+        assertEquals(ResponseMessageEnum.SEARCHED_SUCCESSFULLY, response.getMessage());
+        assertEquals(2, response.getData().size());
+        assertEquals("Test post 1", response.getData().get(0).getName());
+        assertEquals("Test post 2", response.getData().get(1).getName());
+    }
+
+    @Test
+    void testSearchByName_Exception(){
+        // Arrange
+        String searchName = "NonExistingPost";
+
+        List<Post> emptyPostList = new ArrayList<>();
+
+        when(postRepository.findAllByNameContaining(searchName)).thenReturn(emptyPostList);
+
+        // Act:
+        ResponseModel<List<PostDto>> response = postService.searchByName(searchName);
+
+        // Assert:
+        assertEquals(ResponseStatusEnum.NO_CONTENT.getCode(), response.getCode());
+        assertEquals(ResponseMessageEnum.DATA_NOT_FOUND, response.getMessage());
+        assertTrue(response.getSuccess());
+        assertTrue(response.getData().isEmpty());
+
+        verify(postRepository, times(1)).findAllByNameContaining(searchName);
+        verify(postMapper, never()).convertList(anyList());
+    }
+
 }
