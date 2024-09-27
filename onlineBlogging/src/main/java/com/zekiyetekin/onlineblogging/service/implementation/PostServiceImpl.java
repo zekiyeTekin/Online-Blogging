@@ -70,20 +70,6 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-    /*
-    public ResponseModel<PostDto> likePost(Integer id) {
-
-        Optional<Post> optionalPost = postRepository.findById(id);
-
-        if (optionalPost.isPresent()) {
-            Post post = optionalPost.get();
-            post.setLikeCount(post.getLikeCount() + 1);
-            return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.SUCCESSFULLY_DONE, postMapper.toDto(postRepository.save(post)));
-        } else {
-            throw new EntityNotFoundException("Post not found with id" + id);
-        }
-    }*/
-
 
     public ResponseModel<List<PostDto>> searchByName(String name) {
         return new ResponseModel<>(ResponseStatusEnum.OK.getCode(), ResponseStatusEnum.OK.getMessage(), true, ResponseMessageEnum.SEARCHED_SUCCESSFULLY, postMapper.convertList(postRepository.findAllByNameContaining(name)));

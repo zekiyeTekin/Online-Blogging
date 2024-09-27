@@ -14,7 +14,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -81,6 +83,40 @@ class PostServiceImplTest {
 
         verify(postRepository, times(1)).save(post);
         verify(postMapper, times(0)).toDto(any(Post.class));
+    }
 
+    @Test
+    void testGetAllPost_Success(){
+        // Arrenge:
+        Post post = new Post();
+        List<Post> postList = Arrays.asList(post);
+        List<PostDto> postDtoList = Arrays.asList(new PostDto());
+
+        when(postRepository.findAll()).thenReturn(postList);
+        when(postMapper.convertList(postList)).thenReturn(postDtoList);
+
+        // Act:
+        ResponseModel<List<PostDto>> response = postService.getAllPost();
+
+        // Assert:
+        assertEquals(ResponseStatusEnum.OK.getCode(), response.getCode());
+        assertEquals(ResponseMessageEnum.LISTING_SUCCESSFULLY_DONE, response.getMessage());
+        assertTrue(response.getSuccess());
+        assertEquals(postDtoList, response.getData());
+    }
+
+    @Test
+    void testGetAllPost_Exception(){
+        // Arrange:
+        when(postRepository.findAll()).thenThrow(new RuntimeException("Database error"));
+
+        // Act:
+        ResponseModel<List<PostDto>> response = postService.getAllPost();
+
+        // Assert:
+        assertEquals(ResponseStatusEnum.INTERNAL_SERVER_ERROR.getCode(), response.getCode());
+        assertEquals(ResponseMessageEnum.DATA_NOT_FOUND, response.getMessage());
+        assertFalse(response.getSuccess());
+        assertNull(response.getData());
     }
 }
