@@ -9,13 +9,16 @@ import com.zekiyetekin.onlineblogging.enumuration.ResponseStatusEnum;
 import com.zekiyetekin.onlineblogging.mapper.CommentMapper;
 import com.zekiyetekin.onlineblogging.repository.CommentRepository;
 import com.zekiyetekin.onlineblogging.repository.PostRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -75,6 +78,66 @@ class CommentServiceImplTest {
         verify(commentRepository, times(1)).save(any(Comment.class));
         verify(commentMapper, times(1)).toDto(comment);
     }
+
+    @Test
+    void testCreateComment_Exception() {
+        // Arrange
+        Integer postId = 1;
+        CommentDto commentDto = new CommentDto();
+        commentDto.setContent("Test Comment");
+
+        when(postRepository.findById(postId)).thenReturn(Optional.empty());
+
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
+            commentService.createComment(postId, commentDto);
+        });
+
+        assertEquals("Post not found", thrown.getMessage());
+
+        verify(postRepository, times(1)).findById(postId);
+        verify(commentRepository, never()).save(any(Comment.class));
+    }
+
+    @Test
+    void testGetCommentByPostId(){
+        // Arrange:
+        Integer postId = 1;
+        List<Comment> commentList = new ArrayList<>();
+        commentList.add(new Comment());
+
+        when(commentRepository.findCommentsByPostId(postId)).thenReturn(commentList);
+        when(commentMapper.convertList(commentList)).thenReturn(new ArrayList<>());
+
+        // Act:
+        ResponseModel<List<CommentDto>> response = commentService.getCommentByPostId(postId);
+
+        // Assert:
+        assertEquals(ResponseStatusEnum.OK.getCode(), response.getCode());
+        assertTrue(response.getSuccess());
+
+        verify(commentRepository, times(1)).findCommentsByPostId(postId);
+        verify(commentMapper,times(1)).convertList(commentList);
+    }
+
+    @Test
+    void testGetCommentByPostId_Exception(){
+        // Arrange:
+        Integer postId = 1;
+        List<Comment> commentList = new ArrayList<>();
+
+        when(commentRepository.findCommentsByPostId(postId)).thenReturn(commentList);
+        // Act:
+        ResponseModel<List<CommentDto>> response = commentService.getCommentByPostId(postId);
+
+        // Assert:
+        assertEquals(ResponseStatusEnum.NO_CONTENT.getCode(), response.getCode());
+        assertTrue(response.getSuccess());
+
+
+        verify(commentRepository, times(1)).findCommentsByPostId(postId);
+        verify(commentMapper, never()).convertList(commentList);
+    }
+
 
 
 }
