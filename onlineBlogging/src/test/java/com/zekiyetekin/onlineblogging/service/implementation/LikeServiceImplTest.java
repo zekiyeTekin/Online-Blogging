@@ -51,7 +51,7 @@ class LikeServiceImplTest {
 
         post = new Post();
         post.setId(1);
-        post.setLikeCount(0); // Başlangıç like sayısı 0
+        post.setLikeCount(1);
 
         like = new Like();
         like.setPost(post);
@@ -62,8 +62,6 @@ class LikeServiceImplTest {
 
     @Test
     void testLikesPost_Success() {
-
-
         when(postRepository.findById(1)).thenReturn(Optional.of(post));
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(likeRepository.findLikeByUserAndPost(user, post)).thenReturn(Optional.empty());
@@ -75,7 +73,47 @@ class LikeServiceImplTest {
         verify(postRepository).save(post);
         assertEquals(ResponseStatusEnum.CREATED.getCode(), response.getCode());
         assertEquals(ResponseMessageEnum.LIKED_SUCCESSFULLY, response.getMessage());
-        assertEquals(1, post.getLikeCount());
-
+        assertEquals(2, post.getLikeCount());
     }
+
+    @Test
+    void testLikePost_Dislikes(){
+        when(postRepository.findById(1)).thenReturn(Optional.of(post));
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        when(likeRepository.findLikeByUserAndPost(user, post)).thenReturn(Optional.of(like));
+        when(likeMapper.toDto(any(Like.class))).thenReturn(likeDto);
+
+        ResponseModel<LikeDto> response = likeService.likesPost(1, 1);
+
+        verify(likeRepository).delete(like);
+        verify(postRepository).save(post);
+
+        assertEquals(ResponseStatusEnum.CREATED.getCode(), response.getCode());
+        assertEquals(ResponseMessageEnum.DISLIKED_SUCCESSFULLY, response.getMessage());
+        assertEquals(0, post.getLikeCount());
+    }
+
+    @Test
+    void testLikePost_PostNotFound(){
+        when(postRepository.findById(1)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            likeService.likesPost(1,1);
+        });
+
+        assertEquals("Post not found", exception.getMessage());
+    }
+
+    @Test
+    void testLikePost_UserNotFound(){
+        when(userRepository.findById(1)).thenReturn(Optional.empty());
+        when(postRepository.findById(1)).thenReturn(Optional.of(post));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            likeService.likesPost(1,1);
+        });
+
+        assertEquals("User not found", exception.getMessage());
+    }
+
 }
