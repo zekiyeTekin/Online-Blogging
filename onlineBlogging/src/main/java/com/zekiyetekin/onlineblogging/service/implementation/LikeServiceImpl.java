@@ -54,7 +54,6 @@ public class LikeServiceImpl implements LikeService {
                     ResponseMessageEnum.LIKED_SUCCESSFULLY,
                     likeMapper.toDto(newLike));
         } else {
-
             likeRepository.delete(optionalLike.get());
 
             post.setLikeCount(post.getLikeCount() - 1);
