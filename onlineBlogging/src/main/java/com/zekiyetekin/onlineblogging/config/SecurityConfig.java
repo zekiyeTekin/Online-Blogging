@@ -2,7 +2,7 @@ package com.zekiyetekin.onlineblogging.config;
 
 
 import com.zekiyetekin.onlineblogging.enumuration.RoleEnum;
-import com.zekiyetekin.onlineblogging.securityFilter.JwtFilter;
+import com.zekiyetekin.onlineblogging.securityfilter.JwtFilter;
 import com.zekiyetekin.onlineblogging.service.implementation.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

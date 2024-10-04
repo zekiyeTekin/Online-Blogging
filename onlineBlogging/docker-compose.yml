@@ -1,0 +1,34 @@
+services:
+  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile2
+    image: online-blogging-app:v0.0.11
+    ports:
+      - "8088:8088"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/online_blogging_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - app-network
+
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: online_blogging_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5434:5432"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

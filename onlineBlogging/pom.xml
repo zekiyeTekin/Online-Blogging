@@ -12,6 +12,7 @@
 	<artifactId>onlineBlogging</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>onlineBlogging</name>
+	<packaging>jar</packaging>
 	<description>Blogging project for Spring Boot</description>
 	<url/>
 	<licenses>
