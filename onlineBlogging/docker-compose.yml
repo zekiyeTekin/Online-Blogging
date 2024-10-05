@@ -26,9 +26,14 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - "5434:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
     networks:
       - app-network
 
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  db-data:
