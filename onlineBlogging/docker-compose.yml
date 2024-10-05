@@ -12,6 +12,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/online_blogging_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./uploads:/app/uploads
     networks:
       - app-network
 
@@ -37,3 +39,4 @@ networks:
 
 volumes:
   db-data:
+  uploads-data:
